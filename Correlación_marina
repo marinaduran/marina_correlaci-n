@@ -1,0 +1,132 @@
+getwd()
+nuevo_dir <- nuevo_dir<- "c:/Correlación_marina"
+setwd(nuevo_dir)
+getwd()
+
+#Ejercicio 1
+#La correlación lineal es un concepto estadístico que nos ayuda a entender cómo se relacionan dos variables cuantificativas entre sí
+#Se utiliza para medir la fuerza y la dirección de esta relacion. Cuando dos variables están positivamente correlacionadas,significa que tieden a moverse en la misma dirección. Pero si están negativamente 
+#correlacionadas, una variable tiende a aumentar, mientras que la otra tiende a disminuir. Al contrario pasa si están psitivamente correlacionadas.
+#Una correlación de 1 indica una relación perfectamente positiva, -1 indica una relación perfectamente negativa y 0 indica que no hay relación lineal entre las variables. 
+
+#Ejercicio 2
+#La correlación lineal es una prueba de correlación paramétrica debido a que asume los datos siguen una distribución específica, 
+#como la distribución normal. Este enfoque estadítico implica que la correlación lineal requiere que los datos cumplan ciertos supuestos, como la normalidad y la homogeneidad de las varianzas. 
+#Estas pruebas suelen ser más potentes cuando se cumplen estos supuestos y pueden proporcionar estimaciones más precisas de los parámetros de interés.
+
+#Por otro lado, las pruebas no paramétricas no hacen supuestos sobre la distribución de los datos subyacentes. Estas pruebas son útiles cuando los datos no cumplen los supuestos de las pruebas paramétricas, como en el caso de datos sesgados o con distribuciones no normales. 
+#Las pruebas no paramétricas suelen ser menos sensibles que las pruebas paramétricas cuando se cumplen los supuestos, pero son más robustas frente a la violación de estos supuestos.
+
+#Ejercicio 3
+correlacion_matriz <- cor(data)
+print(correlacion_matriz)
+
+#Esto te dará una matriz de correlación donde cada elemento representa la correlación entre dos variables en el conjunto de datos. 
+#La diagonal principal dará valores de correlación de 1, ya que representa la correlación de una variable consigo misma. 
+#Los valores fuera de la diagonal principal expondrán la correlación entre pares de variables.
+
+#Ejercicio 4
+resultados_corr <- corr.test(data)
+corrplot(resultados_corr$r, method="circle", type="upper", sig.level=0.05, insig="blank")
+#Con este código se pueden calcular los coeficientes de correlación para todas las combinaciones de variables en tu conjunto de datos y mostrará un gráfico de correlación donde cada celda representará la correlación entre dos variables. 
+#Los p-values se mostrarán dentro de cada celda y estarán coloreados según su nivel de significancia. Las celdas en blanco indicarán que la correlación no es significativa según el nivel de significancia especificado (en este caso, 0.05).
+
+#Ejercicio 5
+matriz_correl <- rcorr(as.matrix(data))
+print(matriz_correl)
+
+#Ejercicio 6
+# Crear un diagrama de dispersión con una línea de regresión
+plot(data$altura, data$peso, main = "Diagrama de dispersión: Altura vs Peso",
+     xlab = "Altura", ylab = "Peso", pch = 19)
+
+# Agregar la línea de regresión
+abline(lm(peso ~ altura, data = data), col = "red")
+
+#Ejercicio 7
+correlacion_peso_alt <- cor(data$altura,data$peso)
+plot(data$altura, data$peso, main = "Correlación entre Altura y Peso",
+     xlab = "Longitud", ylab = "Peso", pch = 19, col = "blue")
+text(x = max(data$altura), y = max(data$peso), labels = paste("Correlación:", round(correlacion_peso_alt, 2)))
+
+#Ejercicio 8
+#a
+distancia <- c(1.1, 100.2, 90.3, 5.4, 57.5, 6.6, 34.7, 65.8, 57.9, 86.1)
+n_cuentas <- c(110, 2, 6, 98, 40, 94, 31, 5, 8, 10)
+datos <- data.frame(distancia,n_cuentas)
+
+#b
+correlacion_dist_cuent <- cor(datos$distancia, datos$n_cuentas)
+print(paste("Coeficiente de correlación:", correlacion_dist_cuent))
+
+#c
+p_value <- cor.test(datos$distancia, datos$n_cuentas)$p.value
+print(paste("Nivel de significancia (p-value):", p_value))
+
+#d
+ci <- cor.test(datos$distancia, datos$n_cuentas)$conf.int
+print(paste("Intervalo de confianza al 95%:", ci))
+
+#e
+correlacion <- cor(datos$distancia, datos$n_cuentas)
+print(paste("Coeficiente de correlación:", correlacion))
+if(correlacion > 0) {
+  print("La correlación es positiva, lo que sugiere que a medida que la distancia aumenta, el número de piezas también tiende a aumentar.")
+} else if(correlacion < 0) {
+  print("La correlación es negativa, lo que sugiere que a medida que la distancia aumenta, el número de piezas tiende a disminuir.")
+} else {
+  print("No hay correlación lineal entre las variables.")
+}
+
+#f
+p_value <- cor.test(datos$distancia, datos$n_cuentas)$p.value
+if(p_value < 0.05) {
+  print("La relación es significativa.")
+} else {
+  print("La relación no es significativa.")
+}
+
+#g
+#El tamaño de muestra es pequeño (n=10), lo que puede afectar la robustez de la conclusión sobre la correlación. Sería recomendable validar estos resultados con un tamaño de muestra más grande si es posible.
+
+#Ejercicio 9
+#Para entender la diferencia entre una relación lineal y una relación monótona entre dos variables en R, primero generaremos algunos datos de ejemplo y luego visualizaremos ambos tipos de relaciones.
+
+#En una relación lineal, el cambio en una variable está linealmente relacionado con el cambio en la otra variable. Esto significa que cuando una variable aumenta, 
+#la otra variable también aumenta (correlación positiva) o disminuye (correlación negativa) de manera constante y proporcional.
+
+#En una relación monótona, el cambio en una variable está relacionado con el cambio en la otra variable, pero no necesariamente de manera lineal. 
+#Puede ser creciente o decreciente, pero no hay un patrón fijo de cambio como en una relación lineal.
+
+#Rel lineal
+x <- seq(1, 10, by = 1)
+y_linear <- 2 * x + rnorm(length(x), mean = 0, sd = 2)
+
+#Rel monotona
+y_monotona <- c(5, 4, 3, 2, 1, 1, 1, 1, 1, 1)
+
+datos_rel <- data.frame(x, y_linear, y_monotona)
+par(mfrow = c(1, 2)
+
+graf_rel_linear <- plot(datos_rel$x, datos_rel$y_linear, main = "Relación Lineal", xlab = "Variable X", ylab = "Variable Y", pch = 16)
+abline(lm(y_linear ~ x, data = datos_rel), col = "red")
+legend("topleft", legend = "y = 2x", col = "red", lty = 1, bty = "n")    
+
+graf_rel_monot <- plot(datos_rel$x, datos_rel$y_monotona, main = "Relación Monótona", xlab = "Variable X", ylab = "Variable Y", pch = 16)
+
+#En este ejemplo se ve que el primer gráfico muestra una relación lineal entre x y y_linear, donde los puntos de datos siguen una línea recta. 
+#Mientras que en el segundo gráfico, la relación entre x y y_monotonic es monótona, ya que los puntos de datos muestran un patrón de disminución constante, pero no necesariamente lineal.
+
+#Ejercicio 10
+#Si las variables experimentan una relación monótona, se puede aplicar la prueba de correlación de Spearman. 
+#Con esta prueba evalúa la fuerza y la dirección de la asociación entre dos variables, sin asumir que la relación es necesariamente lineal.
+
+#Supongamos que tenemos dos variables x y y que experimentan una relación monótona. Se realiza la prueba de correlación de Spearman para evaluar esta relación.
+x <- c(1, 2, 3, 4, 5)
+y_monotona <- c(5, 4, 3, 2, 1)
+correlacion <- cor.test(x, y_monotona, method = "spearman")
+print(correlacion)
+
+#El resultado de la prueba de correlación de Spearman mostrará el coeficiente de correlación de Spearman, el valor p y otras estadísticas relacionadas con la prueba. 
+#Si el valor p es menor que el nivel de significancia elegido (por ejemplo, 0.05), entonces podemos concluir que hay una correlación significativa entre las variables x e y en términos de su relación monótona.
+
